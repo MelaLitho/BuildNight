@@ -54,9 +54,42 @@ docker exec -it pgedge-postgres psql -U admin example_db
 
 Prefer Compose with the extensions pre-initialized? Use the single-node **Enterprise example:** https://github.com/pgEdge/postgres-images/tree/main/examples/compose/enterprise
 
-**Distributed (two-node, write-anywhere):** brings up two pgEdge nodes (n1 / n2) with Spock logical replication pre-configured, so you can write to either node and watch the row appear on the other. This is the starting point for build prompt #3.
+**Distributed (two-node, write-anywhere) — recommended via the Control Plane.** The pgEdge Control Plane runs a real distributed cluster with just Docker (no Kubernetes) and configures Spock multi-master replication for you from the node spec — there's no manual replication setup, and schema changes replicate too. This is the starting point for build prompt #3.
 
-https://github.com/pgEdge/postgres-images/tree/main/examples/compose/distributed
+> **Docker Desktop (macOS/Windows):** turn on **host networking** first (Settings → Resources → Network) — the Control Plane needs it.
+
+```bash
+# One-time Docker setup
+docker swarm init
+mkdir -p ~/pgedge/control-plane
+
+# Start the Control Plane
+docker run --detach \
+  --env PGEDGE_HOST_ID=host-1 \
+  --env PGEDGE_DATA_DIR=${HOME}/pgedge/control-plane \
+  --volume ${HOME}/pgedge/control-plane:${HOME}/pgedge/control-plane \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --network host --name host-1 \
+  ghcr.io/pgedge/control-plane run
+
+# Init the cluster, then create a 2-node distributed database
+# (give the container a few seconds to come up first)
+curl http://localhost:3000/v1/cluster/init
+curl -X POST http://localhost:3000/v1/databases \
+  -H 'Content-Type:application/json' \
+  --data '{"id":"example","spec":{"database_name":"example",
+    "database_users":[{"username":"admin","password":"password","db_owner":true,"attributes":["SUPERUSER","LOGIN"]}],
+    "nodes":[{"name":"n1","port":6432,"host_ids":["host-1"]},
+             {"name":"n2","port":6433,"host_ids":["host-1"]}]}}'
+
+# Connect to either node — write on one, watch it appear on the other
+PGPASSWORD=password psql -h localhost -p 6432 -U admin example   # n1
+PGPASSWORD=password psql -h localhost -p 6433 -U admin example   # n2
+```
+
+Full walkthrough: https://docs.pgedge.com/control-plane/v0-8/installation/quickstart/#installation
+
+Want the lightest possible path instead? The `postgres-images` repo has a plain Docker Compose **distributed example** (two nodes, Spock pre-wired): https://github.com/pgEdge/postgres-images/tree/main/examples/compose/distributed
 
 ---
 
@@ -99,7 +132,7 @@ Stand up the pgEdge RAG Server over a corpus and ask it real questions. One pipe
 
 Bring up a two-node active-active pgEdge cluster, load Northwind, then write to either node and watch the row appear on the other. Multi-master replication where every node takes writes — the write-anywhere data layer underneath multi-region agents.
 
-*Start from:* the distributed Docker Compose example in the `postgres-images` repo.
+*Start from:* the Control Plane quickstart (Docker, no Kubernetes) — see the "Bring up Postgres" section above. For the lightest setup, the plain Docker Compose distributed example in the `postgres-images` repo also works.
 
 ### 4. Agent builds the app, then runs on it (wildcard)
 
