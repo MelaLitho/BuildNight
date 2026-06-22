@@ -31,6 +31,35 @@ If you'd rather come in cold and build live on the night, that works too. Clone 
 
 ---
 
+## Bring up Postgres: single node or distributed
+
+If you just want a pgEdge Enterprise Postgres instance running locally to point things at, the `postgres-images` repo covers both shapes. The `standard` image already has pgvector and VectorChord-bm25 built in.
+
+**Single node — one command:**
+
+```bash
+docker run --name pgedge-postgres \
+  -e POSTGRES_PASSWORD=mypassword \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_DB=example_db \
+  -p 6432:5432 \
+  -d ghcr.io/pgedge/pgedge-postgres:17-spock5-standard
+```
+
+Then connect:
+
+```bash
+docker exec -it pgedge-postgres psql -U admin example_db
+```
+
+Prefer Compose with the extensions pre-initialized? Use the single-node **Enterprise example:** https://github.com/pgEdge/postgres-images/tree/main/examples/compose/enterprise
+
+**Distributed (two-node, write-anywhere):** brings up two pgEdge nodes (n1 / n2) with Spock logical replication pre-configured, so you can write to either node and watch the row appear on the other. This is the starting point for build prompt #3.
+
+https://github.com/pgEdge/postgres-images/tree/main/examples/compose/distributed
+
+---
+
 ## Before you arrive
 
 A few minutes of prep here saves you from burning your build block on downloads over venue wifi.
