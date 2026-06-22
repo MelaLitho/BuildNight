@@ -87,7 +87,9 @@ PGPASSWORD=password psql -h localhost -p 6432 -U admin example   # n1
 PGPASSWORD=password psql -h localhost -p 6433 -U admin example   # n2
 ```
 
-Full walkthrough: https://docs.pgedge.com/control-plane/v0-8/installation/quickstart/#installation
+Quickstart docs: https://docs.pgedge.com/control-plane/v0-8/installation/quickstart/#installation
+
+Prefer to be walked through it? Guided walkthrough: https://docs.pgedge.com/control-plane/v0-8/walkthrough/
 
 Want the lightest possible path instead? The `postgres-images` repo has a plain Docker Compose **distributed example** (two nodes, Spock pre-wired): https://github.com/pgEdge/postgres-images/tree/main/examples/compose/distributed
 
