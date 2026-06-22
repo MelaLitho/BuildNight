@@ -1,4 +1,4 @@
-# Build Night #2: The Data Layer for Agentic Apps
+# Build Night: The Data Layer for Agentic Apps
 
 **pgEdge + Constructive · AngelList, San Francisco · June 23, 2026**
 
@@ -106,18 +106,3 @@ Bring up a two-node active-active pgEdge cluster, load Northwind, then write to 
 Have Claude design and seed a schema through the MCP Server, then drop a minimal dashboard on top that talks to that same server for every read and write. The agent uses one MCP server to build the app, and the running app uses that same server at runtime, with zero bespoke DB code in between.
 
 *Start from:* the MCP Server quickstart, then build outward.
-
----
-
-## On the night
-
-- **5:30** — Doors open. Lobster rolls, drinks, conversation.
-- **6:10** — Welcome and opening remarks.
-- **6:20** — Architecture walkthrough with pgEdge engineering.
-- **6:30** — Build block. Pair up or build solo.
-- **7:30** — Lightning demos from the room.
-- **8:00** — Network and chill.
-
-If you demo, your build can be featured in the post-event reference publication. There's a video team on-site and we'll share demo videos with you afterward.
-
-See you there. Bring something you want to build.
