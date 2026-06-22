@@ -1,4 +1,4 @@
-# Build Night #2: The Data Layer for Agentic Apps
+# Build Night: The Data Layer for Agentic Apps
 
 **pgEdge + Constructive · AngelList, San Francisco · June 23, 2026**
 
